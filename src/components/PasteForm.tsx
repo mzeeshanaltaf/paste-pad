@@ -34,6 +34,7 @@ export default function PasteForm() {
         return;
       }
 
+      sessionStorage.setItem(`paste_${data.data.paste_code}`, JSON.stringify(data.data));
       router.push(`/${data.data.paste_code}`);
     } catch {
       setError("Something went wrong. Please try again.");
@@ -61,14 +62,22 @@ export default function PasteForm() {
       </div>
 
       <form onSubmit={handleSubmit} className="space-y-4">
-        <div>
+        <div className="relative">
           <input
             type="text"
             placeholder="Title (optional)"
             value={title}
             onChange={(e) => setTitle(e.target.value)}
-            className="w-full rounded-xl border border-stone-200 bg-stone-50/50 px-4 py-3 text-stone-900 placeholder-stone-400 outline-none transition-all focus:border-teal-500 focus:bg-white focus:ring-2 focus:ring-teal-500/10 dark:border-stone-700/80 dark:bg-stone-800/50 dark:text-stone-100 dark:placeholder-stone-500 dark:focus:border-teal-500 dark:focus:bg-stone-800"
+            maxLength={100}
+            className="w-full rounded-xl border border-stone-200 bg-stone-50/50 px-4 py-3 pr-20 text-stone-900 placeholder-stone-400 outline-none transition-all focus:border-teal-500 focus:bg-white focus:ring-2 focus:ring-teal-500/10 dark:border-stone-700/80 dark:bg-stone-800/50 dark:text-stone-100 dark:placeholder-stone-500 dark:focus:border-teal-500 dark:focus:bg-stone-800"
           />
+          {title.length > 0 && (
+            <div className="pointer-events-none absolute right-3 top-1/2 -translate-y-1/2 rounded-md bg-stone-100 px-2 py-0.5 font-mono text-xs dark:bg-stone-700/50">
+              <span className={title.length >= 90 ? "text-amber-500" : "text-stone-400 dark:text-stone-500"}>
+                {title.length}/100
+              </span>
+            </div>
+          )}
         </div>
 
         <div className="relative">
