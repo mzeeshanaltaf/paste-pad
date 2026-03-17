@@ -1,0 +1,72 @@
+@import "tailwindcss";
+
+@custom-variant dark (&:where(.dark, .dark *));
+
+@theme inline {
+  --font-sans: "DM Sans", ui-sans-serif, system-ui, sans-serif;
+  --font-mono: "JetBrains Mono", ui-monospace, monospace;
+  --color-accent: #0d9488;
+  --color-accent-hover: #0f766e;
+  --color-accent-light: #ccfbf1;
+  --color-accent-glow: rgba(13, 148, 136, 0.15);
+}
+
+/* Dot grid background pattern */
+.dot-grid {
+  background-image: radial-gradient(circle, #d1d5db 0.8px, transparent 0.8px);
+  background-size: 24px 24px;
+}
+
+.dark .dot-grid {
+  background-image: radial-gradient(circle, #1e293b 0.8px, transparent 0.8px);
+  background-size: 24px 24px;
+}
+
+/* Smooth theme transition */
+* {
+  transition-property: background-color, border-color, color, box-shadow;
+  transition-timing-function: cubic-bezier(0.4, 0, 0.2, 1);
+  transition-duration: 150ms;
+}
+
+/* Remove transition on inputs to avoid lag */
+input:focus,
+textarea:focus {
+  transition-duration: 0ms;
+}
+
+/* Custom scrollbar for textarea */
+textarea::-webkit-scrollbar {
+  width: 6px;
+}
+textarea::-webkit-scrollbar-track {
+  background: transparent;
+}
+textarea::-webkit-scrollbar-thumb {
+  background: #cbd5e1;
+  border-radius: 3px;
+}
+.dark textarea::-webkit-scrollbar-thumb {
+  background: #334155;
+}
+
+/* Subtle fade-in animation */
+@keyframes fadeUp {
+  from {
+    opacity: 0;
+    transform: translateY(8px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.animate-fade-up {
+  animation: fadeUp 0.4s ease-out;
+}
+
+/* Button press effect */
+.btn-press:active {
+  transform: scale(0.97);
+}
