@@ -2,7 +2,7 @@ import Link from "next/link";
 
 export default function NotFound() {
   return (
-    <main className="mx-auto flex max-w-3xl flex-col items-center px-4 py-24 text-center">
+    <main className="mx-auto flex max-w-5xl flex-col items-center px-4 py-24 text-center">
       <div className="animate-fade-up rounded-2xl border border-stone-200/80 bg-white p-12 shadow-sm shadow-stone-200/50 dark:border-stone-800/60 dark:bg-[#171923] dark:shadow-none">
         <div className="mx-auto mb-6 flex h-16 w-16 items-center justify-center rounded-2xl bg-stone-100 dark:bg-stone-800/60">
           <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth={1.5} className="h-8 w-8 text-stone-400 dark:text-stone-500">
