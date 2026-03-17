@@ -1,0 +1,56 @@
+Header Authorization webhook:
+key: x-api-key
+value: N8N_API_KEY set in .env.local
+
+Create Paste:
+-------------------
+
+Webhook URL: https://n8n.zeeshanai.cloud/webhook/a2e9b080-f3b6-4a7b-82e2-62aaad70daa5
+Type: POST
+
+Body:
+{
+    "event_type": "create_paste",
+    "paste_title": "Confidence",
+    "paste_text": "Confidence is a key and essential for survival in the world these days"
+}
+
+Responses:
+
+[
+  {
+    "id": "2",
+    "paste_code": "6n6mf2lq",
+    "paste_title": "Brown Fox",
+    "paste_text": "A quick brown fox jumps right slowly over the lazy dog. Confidence is a key",
+    "paste_url": "https://paste.zeeshanai.cloud/6n6mf2lq",
+    "created_at": "2026-03-17T10:34:30.256Z",
+    "updated_at": "2026-03-17T10:34:30.257Z"
+  }
+]
+Get Paste:
+-------------
+Retrieves the paste title and text from the provided paste url.
+
+Webhook URL: https://n8n.zeeshanai.cloud/webhook/a2e9b080-f3b6-4a7b-82e2-62aaad70daa5
+Type: POST
+
+Body:
+{
+    "event_type": "get_paste",
+    "paste_url": "https://paste.zeeshanai.cloud/s9oskkpu"
+}
+
+Responses:
+
+[
+  {
+    "id": "1",
+    "paste_code": "s9oskkpu",
+    "paste_title": "Title",
+    "paste_text": "A quick brown fox jumps right slowly over the lazy dog",
+    "paste_url": "https://paste.zeeshanai.cloud/s9oskkpu",
+    "created_at": "2026-03-17T10:23:19.582Z",
+    "updated_at": "2026-03-17T10:23:19.591Z"
+  }
+]

@@ -4,7 +4,7 @@ import ThemeToggle from "./ThemeToggle";
 export default function Header() {
   return (
     <nav className="border-b border-stone-200/80 bg-white/80 backdrop-blur-md dark:border-stone-800/60 dark:bg-[#0f1117]/80">
-      <div className="mx-auto flex h-14 max-w-5xl items-center justify-between px-4 sm:px-6">
+      <div className="mx-auto flex h-14 max-w-6xl items-center justify-between px-4 sm:px-6">
         <Link href="/" className="flex items-center gap-2.5 group">
           {/* Clipboard icon */}
           <div className="flex h-8 w-8 items-center justify-center rounded-lg bg-teal-600 shadow-sm shadow-teal-600/25 transition-transform group-hover:scale-105">
