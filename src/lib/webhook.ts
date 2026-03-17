@@ -1,3 +1,4 @@
+import { cache } from "react";
 import { Paste } from "./types";
 
 const WEBHOOK_URL = process.env.N8N_WEBHOOK_URL!;
@@ -29,7 +30,7 @@ export async function createPaste(
   return data[0];
 }
 
-export async function getPaste(pasteCode: string): Promise<Paste | null> {
+export const getPaste = cache(async function getPaste(pasteCode: string): Promise<Paste | null> {
   try {
     const res = await fetch(WEBHOOK_URL, {
       method: "POST",
@@ -50,4 +51,4 @@ export async function getPaste(pasteCode: string): Promise<Paste | null> {
   } catch {
     return null;
   }
-}
+});

@@ -17,6 +17,9 @@ const jetbrainsMono = JetBrains_Mono({
 export const metadata: Metadata = {
   title: "Paste Pad",
   description: "A simple and modern pastebin for sharing text",
+  icons: {
+    icon: "/paste.png",
+  },
 };
 
 export default function RootLayout({
