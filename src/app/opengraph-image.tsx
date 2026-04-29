@@ -17,53 +17,143 @@ export default function Image() {
           flexDirection: "column",
           alignItems: "center",
           justifyContent: "center",
-          gap: 24,
+          fontFamily: "sans-serif",
         }}
       >
+        {/* Teal accent bar at top */}
+        <div
+          style={{
+            position: "absolute",
+            top: 0,
+            left: 0,
+            right: 0,
+            height: 6,
+            background: "#0d9488",
+            display: "flex",
+          }}
+        />
+
+        {/* Logo badge */}
         <div
           style={{
             display: "flex",
             alignItems: "center",
             justifyContent: "center",
-            width: 96,
-            height: 96,
-            borderRadius: 24,
+            width: 88,
+            height: 88,
+            borderRadius: 20,
             background: "#0d9488",
+            marginBottom: 32,
           }}
         >
-          <svg
-            xmlns="http://www.w3.org/2000/svg"
-            viewBox="0 0 24 24"
-            fill="none"
-            stroke="white"
-            strokeWidth={2}
-            strokeLinecap="round"
-            strokeLinejoin="round"
-            width={48}
-            height={48}
+          {/* Clipboard icon — pure rectangles, no SVG path */}
+          <div
+            style={{
+              display: "flex",
+              flexDirection: "column",
+              alignItems: "center",
+              gap: 5,
+            }}
           >
-            <path d="M16 4h2a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2H6a2 2 0 0 1-2-2V6a2 2 0 0 1 2-2h2" />
-            <rect x="8" y="2" width="8" height="4" rx="1" ry="1" />
-          </svg>
+            <div
+              style={{
+                width: 28,
+                height: 8,
+                borderRadius: 4,
+                background: "white",
+                display: "flex",
+              }}
+            />
+            <div
+              style={{
+                width: 36,
+                height: 6,
+                borderRadius: 3,
+                background: "rgba(255,255,255,0.7)",
+                display: "flex",
+              }}
+            />
+            <div
+              style={{
+                width: 36,
+                height: 6,
+                borderRadius: 3,
+                background: "rgba(255,255,255,0.7)",
+                display: "flex",
+              }}
+            />
+            <div
+              style={{
+                width: 28,
+                height: 6,
+                borderRadius: 3,
+                background: "rgba(255,255,255,0.5)",
+                display: "flex",
+              }}
+            />
+          </div>
         </div>
+
+        {/* Title */}
         <div
           style={{
-            fontSize: 80,
+            display: "flex",
+            flexDirection: "row",
+            fontSize: 88,
             fontWeight: 700,
-            color: "white",
-            letterSpacing: "-2px",
+            letterSpacing: "-3px",
+            lineHeight: 1,
           }}
         >
-          Paste<span style={{ color: "#0d9488" }}>Pad</span>
+          <span style={{ color: "white" }}>Paste</span>
+          <span style={{ color: "#0d9488" }}>Pad</span>
         </div>
+
+        {/* Tagline */}
         <div
           style={{
-            fontSize: 32,
+            display: "flex",
+            fontSize: 34,
             color: "#a8a29e",
-            marginTop: -8,
+            marginTop: 20,
+            letterSpacing: "-0.5px",
           }}
         >
-          Share text snippets instantly
+          Share text snippets instantly — no account needed
+        </div>
+
+        {/* CTA pill */}
+        <div
+          style={{
+            display: "flex",
+            marginTop: 40,
+            background: "#0d9488",
+            borderRadius: 50,
+            paddingLeft: 36,
+            paddingRight: 36,
+            paddingTop: 14,
+            paddingBottom: 14,
+            fontSize: 26,
+            fontWeight: 600,
+            color: "white",
+            letterSpacing: "0.2px",
+          }}
+        >
+          Create a free paste →
+        </div>
+
+        {/* Domain */}
+        <div
+          style={{
+            position: "absolute",
+            bottom: 36,
+            display: "flex",
+            fontSize: 22,
+            color: "#57534e",
+            letterSpacing: "0.5px",
+          }}
+        >
+          paste.zeeshanai.cloud
         </div>
       </div>
     ),
