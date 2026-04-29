@@ -14,11 +14,30 @@ const jetbrainsMono = JetBrains_Mono({
   variable: "--font-mono",
 });
 
+const siteUrl = process.env.NEXT_PUBLIC_SITE_URL ?? "http://localhost:3000";
+const description = "A simple and modern pastebin for sharing text snippets instantly. Create, share, and view text pastes with a unique URL.";
+
 export const metadata: Metadata = {
-  title: "Paste Pad",
-  description: "A simple and modern pastebin for sharing text",
-  icons: {
-    icon: "/paste.png",
+  metadataBase: new URL(siteUrl),
+  title: { default: "Paste Pad", template: "%s | Paste Pad" },
+  description,
+  icons: { icon: "/paste.png" },
+  alternates: { canonical: siteUrl },
+  robots: { index: true, follow: true },
+  openGraph: {
+    type: "website",
+    siteName: "Paste Pad",
+    url: siteUrl,
+    title: "Paste Pad",
+    description,
+  },
+  twitter: {
+    card: "summary_large_image",
+    title: "Paste Pad",
+    description,
+  },
+  other: {
+    "theme-color": "#ffffff",
   },
 };
 

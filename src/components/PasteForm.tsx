@@ -63,7 +63,11 @@ export default function PasteForm() {
 
       <form onSubmit={handleSubmit} className="space-y-4">
         <div className="relative">
+          <label htmlFor="paste-title" className="sr-only">
+            Paste title (optional)
+          </label>
           <input
+            id="paste-title"
             type="text"
             placeholder="Title (optional)"
             value={title}
@@ -81,7 +85,11 @@ export default function PasteForm() {
         </div>
 
         <div className="relative">
+          <label htmlFor="paste-text" className="sr-only">
+            Paste content
+          </label>
           <textarea
+            id="paste-text"
             placeholder="Paste your text here..."
             value={text}
             onChange={(e) => setText(e.target.value)}

@@ -13,9 +13,9 @@ export default function NotFound() {
         <p className="font-mono text-sm font-bold tracking-widest text-teal-600">
           404
         </p>
-        <h2 className="mt-2 text-xl font-bold text-stone-800 dark:text-stone-100">
+        <h1 className="mt-2 text-xl font-bold text-stone-800 dark:text-stone-100">
           Paste Not Found
-        </h2>
+        </h1>
         <p className="mt-2 max-w-sm text-sm leading-relaxed text-stone-500 dark:text-stone-400">
           This paste doesn&apos;t exist or may have been removed. Double-check the URL or create a new one.
         </p>

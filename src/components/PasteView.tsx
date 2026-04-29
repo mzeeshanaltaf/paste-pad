@@ -43,6 +43,7 @@ export default function PasteView({ paste }: { paste: Paste }) {
         </div>
         <button
           onClick={handleCopy}
+          aria-label={copied ? "Copied to clipboard" : "Copy to clipboard"}
           className={`btn-press flex shrink-0 items-center gap-1.5 rounded-lg border px-3.5 py-2 text-sm font-medium transition-all ${
             copied
               ? "border-teal-200 bg-teal-50 text-teal-700 dark:border-teal-800 dark:bg-teal-900/40 dark:text-teal-300"

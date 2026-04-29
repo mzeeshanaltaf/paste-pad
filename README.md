@@ -9,6 +9,7 @@ A simple, modern pastebin for sharing text snippets instantly. Built with Next.j
 - Dark / light theme toggle with persistent preference
 - Copy-to-clipboard on paste view
 - Server-side rendering for paste pages (fast loads, good link previews)
+- SEO-ready: Open Graph / Twitter Card metadata, per-paste `generateMetadata`, JSON-LD structured data, `robots.txt`, `sitemap.xml`, and a dynamic OG image
 - API key never exposed to the browser
 
 ## Tech Stack
@@ -103,10 +104,13 @@ Both endpoints return an array containing the paste object:
 src/
   app/
     page.tsx                  # Home page (paste creation form)
-    layout.tsx                # Root layout with theme provider
+    layout.tsx                # Root layout with metadata + theme provider
     globals.css               # Tailwind + custom styles
+    opengraph-image.tsx       # Edge-rendered branded OG image (1200×630)
+    robots.ts                 # robots.txt generation
+    sitemap.ts                # sitemap.xml (homepage only)
     [pasteCode]/
-      page.tsx                # SSR paste view page
+      page.tsx                # SSR paste view with generateMetadata + JSON-LD
       not-found.tsx           # 404 for invalid paste codes
     api/paste/
       route.ts                # POST proxy to n8n (keeps API key server-side)
