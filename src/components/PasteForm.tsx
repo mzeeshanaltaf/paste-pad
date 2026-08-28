@@ -1,19 +1,73 @@
 "use client";
 
-import { useState } from "react";
+import { useRef, useState } from "react";
 import { useRouter } from "next/navigation";
+import { PasteTab, serializeTabs } from "@/lib/tabs";
 
 export default function PasteForm() {
   const router = useRouter();
   const [title, setTitle] = useState("");
-  const [text, setText] = useState("");
+  const [tabs, setTabs] = useState<PasteTab[]>([
+    { id: "tab-1", name: "Tab 1", content: "" },
+  ]);
+  const [activeTabId, setActiveTabId] = useState("tab-1");
+  const [renamingTabId, setRenamingTabId] = useState<string | null>(null);
+  const [renameValue, setRenameValue] = useState("");
+  const nextTabId = useRef(2);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState("");
 
+  const activeTab = tabs.find((t) => t.id === activeTabId) ?? tabs[0];
+
+  function updateActiveContent(content: string) {
+    setTabs((prev) =>
+      prev.map((t) => (t.id === activeTabId ? { ...t, content } : t))
+    );
+  }
+
+  function addTab() {
+    const id = `tab-${nextTabId.current++}`;
+    setTabs((prev) => [...prev, { id, name: `Tab ${prev.length + 1}`, content: "" }]);
+    setActiveTabId(id);
+  }
+
+  function deleteTab(id: string) {
+    if (tabs.length <= 1) return;
+    const idx = tabs.findIndex((t) => t.id === id);
+    const filtered = tabs.filter((t) => t.id !== id);
+    setTabs(filtered);
+    if (activeTabId === id) {
+      const fallback = filtered[Math.max(0, idx - 1)] ?? filtered[0];
+      setActiveTabId(fallback.id);
+    }
+  }
+
+  function startRename(tab: PasteTab) {
+    setRenamingTabId(tab.id);
+    setRenameValue(tab.name);
+  }
+
+  function commitRename() {
+    if (renamingTabId) {
+      setTabs((prev) =>
+        prev.map((t) =>
+          t.id === renamingTabId
+            ? { ...t, name: renameValue.trim() || t.name }
+            : t
+        )
+      );
+    }
+    setRenamingTabId(null);
+  }
+
+  function cancelRename() {
+    setRenamingTabId(null);
+  }
+
   async function handleSubmit(e: React.FormEvent) {
     e.preventDefault();
-    if (!text.trim()) {
-      setError("Text is required");
+    if (!tabs.some((t) => t.content.trim())) {
+      setError("Add some text to at least one tab");
       return;
     }
 
@@ -24,7 +78,10 @@ export default function PasteForm() {
       const res = await fetch("/api/paste", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ paste_title: title, paste_text: text }),
+        body: JSON.stringify({
+          paste_title: title,
+          paste_text: serializeTabs(tabs),
+        }),
       });
 
       const data = await res.json();
@@ -84,20 +141,93 @@ export default function PasteForm() {
           )}
         </div>
 
-        <div className="relative">
-          <label htmlFor="paste-text" className="sr-only">
-            Paste content
-          </label>
-          <textarea
-            id="paste-text"
-            placeholder="Paste your text here..."
-            value={text}
-            onChange={(e) => setText(e.target.value)}
-            rows={14}
-            className="w-full resize-y rounded-xl border border-stone-200 bg-stone-50/50 px-4 py-3 font-mono text-sm leading-relaxed text-stone-900 placeholder-stone-400 outline-none transition-all focus:border-teal-500 focus:bg-white focus:ring-2 focus:ring-teal-500/10 dark:border-stone-700/80 dark:bg-stone-800/50 dark:text-stone-100 dark:placeholder-stone-500 dark:focus:border-teal-500 dark:focus:bg-stone-800"
-          />
-          <div className="pointer-events-none absolute bottom-3 right-3 rounded-md bg-stone-100 px-2 py-0.5 font-mono text-xs text-stone-400 dark:bg-stone-700/50 dark:text-stone-500">
-            {text.length > 0 ? `${text.length} chars` : ""}
+        <div>
+          {/* Tab bar */}
+          <div className="flex items-end gap-1 overflow-x-auto rounded-t-xl border border-b-0 border-stone-200 bg-stone-100/60 px-2 pt-2 dark:border-stone-700/80 dark:bg-stone-900/40">
+            {tabs.map((tab) => {
+              const isActive = tab.id === activeTabId;
+              return (
+                <div
+                  key={tab.id}
+                  className={`group flex shrink-0 items-center gap-1.5 rounded-t-lg border border-b-0 px-3 py-2 text-sm transition-colors ${
+                    isActive
+                      ? "border-stone-200 bg-white text-stone-900 dark:border-stone-700/80 dark:bg-[#171923] dark:text-stone-100"
+                      : "border-transparent text-stone-500 hover:bg-stone-200/50 dark:text-stone-400 dark:hover:bg-stone-800/60"
+                  }`}
+                >
+                  {renamingTabId === tab.id ? (
+                    <input
+                      autoFocus
+                      value={renameValue}
+                      onChange={(e) => setRenameValue(e.target.value)}
+                      onBlur={commitRename}
+                      onKeyDown={(e) => {
+                        if (e.key === "Enter") {
+                          e.preventDefault();
+                          commitRename();
+                        } else if (e.key === "Escape") {
+                          e.preventDefault();
+                          cancelRename();
+                        }
+                      }}
+                      maxLength={40}
+                      className="w-24 rounded border border-teal-500 bg-transparent px-1 text-sm outline-none"
+                    />
+                  ) : (
+                    <button
+                      type="button"
+                      onClick={() => setActiveTabId(tab.id)}
+                      onDoubleClick={() => startRename(tab)}
+                      className="max-w-36 truncate font-medium"
+                      title="Double-click to rename"
+                    >
+                      {tab.name}
+                    </button>
+                  )}
+                  {tabs.length > 1 && (
+                    <button
+                      type="button"
+                      onClick={() => deleteTab(tab.id)}
+                      aria-label={`Delete ${tab.name}`}
+                      className="rounded p-0.5 text-stone-400 opacity-0 transition-opacity hover:bg-stone-200 hover:text-stone-700 group-hover:opacity-100 dark:hover:bg-stone-700 dark:hover:text-stone-200"
+                    >
+                      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth={2} strokeLinecap="round" className="h-3 w-3">
+                        <line x1="18" y1="6" x2="6" y2="18" />
+                        <line x1="6" y1="6" x2="18" y2="18" />
+                      </svg>
+                    </button>
+                  )}
+                </div>
+              );
+            })}
+            <button
+              type="button"
+              onClick={addTab}
+              aria-label="Add tab"
+              className="mb-1 shrink-0 rounded-lg p-1.5 text-stone-500 transition-colors hover:bg-stone-200/70 hover:text-stone-700 dark:text-stone-400 dark:hover:bg-stone-800/60 dark:hover:text-stone-200"
+            >
+              <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth={2} strokeLinecap="round" className="h-4 w-4">
+                <line x1="12" y1="5" x2="12" y2="19" />
+                <line x1="5" y1="12" x2="19" y2="12" />
+              </svg>
+            </button>
+          </div>
+
+          <div className="relative">
+            <label htmlFor="paste-text" className="sr-only">
+              Paste content
+            </label>
+            <textarea
+              id="paste-text"
+              placeholder="Paste your text here..."
+              value={activeTab.content}
+              onChange={(e) => updateActiveContent(e.target.value)}
+              rows={14}
+              className="w-full resize-y rounded-b-xl rounded-tr-xl border border-stone-200 bg-stone-50/50 px-4 py-3 font-mono text-sm leading-relaxed text-stone-900 placeholder-stone-400 outline-none transition-all focus:border-teal-500 focus:bg-white focus:ring-2 focus:ring-teal-500/10 dark:border-stone-700/80 dark:bg-stone-800/50 dark:text-stone-100 dark:placeholder-stone-500 dark:focus:border-teal-500 dark:focus:bg-stone-800"
+            />
+            <div className="pointer-events-none absolute bottom-3 right-3 rounded-md bg-stone-100 px-2 py-0.5 font-mono text-xs text-stone-400 dark:bg-stone-700/50 dark:text-stone-500">
+              {activeTab.content.length > 0 ? `${activeTab.content.length} chars` : ""}
+            </div>
           </div>
         </div>
 

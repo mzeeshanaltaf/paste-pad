@@ -1,6 +1,7 @@
 import type { Metadata } from "next";
 import PasteLoader from "@/components/PasteLoader";
 import { getPaste } from "@/lib/webhook";
+import { getPlainTextPreview } from "@/lib/tabs";
 
 type Props = {
   params: Promise<{ pasteCode: string }>;
@@ -12,7 +13,7 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
   if (!paste) return {};
 
   const title = paste.paste_title || "Untitled";
-  const description = paste.paste_text.slice(0, 155);
+  const description = getPlainTextPreview(paste.paste_text).slice(0, 155);
   const url = `${process.env.NEXT_PUBLIC_SITE_URL}/${pasteCode}`;
 
   return {
@@ -33,7 +34,7 @@ export default async function PastePage({ params }: Props) {
         "@context": "https://schema.org",
         "@type": "Article",
         headline: paste.paste_title || "Untitled",
-        description: paste.paste_text.slice(0, 155),
+        description: getPlainTextPreview(paste.paste_text).slice(0, 155),
         url: `${process.env.NEXT_PUBLIC_SITE_URL}/${pasteCode}`,
         datePublished: paste.created_at,
       }

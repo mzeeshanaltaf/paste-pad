@@ -1,13 +1,20 @@
 "use client";
 
 import { Paste } from "@/lib/types";
+import { parseTabs } from "@/lib/tabs";
 import { useState } from "react";
 
 export default function PasteView({ paste }: { paste: Paste }) {
   const [copied, setCopied] = useState(false);
+  const tabs = parseTabs(paste.paste_text);
+  const [activeTabId, setActiveTabId] = useState(tabs?.[0]?.id ?? "");
+
+  const activeContent = tabs
+    ? tabs.find((t) => t.id === activeTabId)?.content ?? tabs[0].content
+    : paste.paste_text;
 
   function handleCopy() {
-    navigator.clipboard.writeText(paste.paste_text);
+    navigator.clipboard.writeText(activeContent);
     setCopied(true);
     setTimeout(() => setCopied(false), 2000);
   }
@@ -69,12 +76,35 @@ export default function PasteView({ paste }: { paste: Paste }) {
         </button>
       </div>
 
+      {/* Tab bar */}
+      {tabs && tabs.length > 1 && (
+        <div className="flex items-center gap-1 overflow-x-auto border-b border-stone-100 bg-stone-50/50 px-4 pt-2 dark:border-stone-800/60 dark:bg-stone-900/30">
+          {tabs.map((tab) => {
+            const isActive = tab.id === activeTabId;
+            return (
+              <button
+                key={tab.id}
+                type="button"
+                onClick={() => setActiveTabId(tab.id)}
+                className={`shrink-0 truncate rounded-t-lg border border-b-0 px-3 py-2 text-sm font-medium transition-colors max-w-40 ${
+                  isActive
+                    ? "border-stone-200 bg-white text-stone-900 dark:border-stone-800/60 dark:bg-[#171923] dark:text-stone-100"
+                    : "border-transparent text-stone-500 hover:bg-stone-200/40 dark:text-stone-400 dark:hover:bg-stone-800/40"
+                }`}
+              >
+                {tab.name}
+              </button>
+            );
+          })}
+        </div>
+      )}
+
       {/* Content */}
       <div className="relative">
         <div className="absolute inset-y-0 left-0 w-12 border-r border-stone-100 bg-stone-50/50 dark:border-stone-800/40 dark:bg-stone-900/30" />
         <div className="relative px-6 py-5 pl-16">
           <pre className="whitespace-pre-wrap wrap-break-word font-mono text-sm leading-7 text-stone-700 dark:text-stone-300">
-            {paste.paste_text}
+            {activeContent}
           </pre>
         </div>
       </div>
