@@ -1,0 +1,37 @@
+name: Debug Coolify network reachability
+
+on:
+  workflow_dispatch: {}
+
+jobs:
+  debug:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Network diagnostics
+        run: |
+          set -x
+          echo "--- DNS resolution ---"
+          getent hosts coolify.zeeshanai.cloud || true
+          nslookup coolify.zeeshanai.cloud || true
+
+          echo "--- Runner egress IP ---"
+          curl -s --max-time 10 https://api.ipify.org || true
+          echo
+
+          echo "--- TCP port 443 via domain ---"
+          timeout 10 bash -c "cat < /dev/null > /dev/tcp/coolify.zeeshanai.cloud/443" && echo "OPEN" || echo "FAILED/TIMEOUT"
+
+          echo "--- TCP port 443 via direct IP ---"
+          timeout 10 bash -c "cat < /dev/null > /dev/tcp/76.13.7.106/443" && echo "OPEN" || echo "FAILED/TIMEOUT"
+
+          echo "--- TCP port 22 (SSH) via direct IP ---"
+          timeout 10 bash -c "cat < /dev/null > /dev/tcp/76.13.7.106/22" && echo "OPEN" || echo "FAILED/TIMEOUT"
+
+          echo "--- TCP port 80 via direct IP ---"
+          timeout 10 bash -c "cat < /dev/null > /dev/tcp/76.13.7.106/80" && echo "OPEN" || echo "FAILED/TIMEOUT"
+
+          echo "--- curl -v to direct IP with Host header ---"
+          curl -v --max-time 10 --resolve coolify.zeeshanai.cloud:443:76.13.7.106 https://coolify.zeeshanai.cloud/api/v1/health 2>&1 || true
+
+          echo "--- traceroute to VPS ---"
+          which traceroute && timeout 20 traceroute -T -p 443 -w 2 -m 15 76.13.7.106 || echo "no traceroute"
